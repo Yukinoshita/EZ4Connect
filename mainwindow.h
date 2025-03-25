@@ -55,6 +55,13 @@ private:
 
     void initZjuConnect();
 
+    void updateVersionInfo();
+
+    struct {
+        QString ui_version, ui_latest;
+        QString core_version, core_latest;
+    } versionInfo;
+
     Ui::MainWindow *ui;
     QSystemTrayIcon *trayIcon;
     QMenu *trayMenu;
@@ -62,6 +69,7 @@ private:
     QAction *trayCloseAction;
     ZjuConnectController *zjuConnectController;
     QNetworkAccessManager *checkUpdateNAM;
+    QNetworkAccessManager *checkCoreUpdateNAM;
     QSettings *settings;
     QProcess *process;
     QProcess *processForL2tp;

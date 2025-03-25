@@ -1,6 +1,3 @@
-#ifndef PROXYSETTINGS_H
-#define PROXYSETTINGS_H
-
 #include <QProcess>
 #include <QMessageBox>
 #include <QSettings>
@@ -524,5 +521,3 @@ void Utils::clearSystemProxy()
     linuxClearSystemProxy();
 #endif
 }
-
-#endif // PROXYSETTINGS_H

@@ -115,16 +115,7 @@ void MainWindow::initZjuConnect()
                     QString password_ = QByteArray::fromBase64(settings->value("Credential/Password", "").toString().toUtf8());
 
                     auto startZjuConnect = [this](const QString &username, const QString &password) {
-                        QString program_filename;
-                        if (QSysInfo::productType() == "windows")
-                        {
-                            program_filename = "zju-connect.exe";
-                        }
-                        else
-                        {
-                            program_filename = "zju-connect";
-                        }
-                        QString program_path = QCoreApplication::applicationDirPath() + "/" + program_filename;
+                        QString program_path = Utils::getCorePath();
 						QString bind_prefix = settings->value("ZJUConnect/OutsideAccess", false).toBool() ? "[::]:" : "[::1]:";
 
                         isZjuConnectLinked = true;

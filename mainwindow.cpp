@@ -47,9 +47,12 @@ MainWindow::MainWindow(QWidget *parent) :
     )));
 
     ui->applicationNameLabel->setText(QApplication::applicationDisplayName());
-    ui->versionLabel->setText(
-        "当前版本：v" + QApplication::applicationVersion() + "\n正在检查更新……\n"
-    );
+
+	versionInfo.ui_version = QApplication::applicationVersion();
+	versionInfo.ui_latest = "正在检查";
+    versionInfo.core_version = "未知";
+	versionInfo.core_latest = "正在检查";
+    updateVersionInfo();
 
     // 系统托盘
     trayIcon = new QSystemTrayIcon(this);
@@ -175,9 +178,9 @@ MainWindow::MainWindow(QWidget *parent) :
         this, [&](QNetworkReply* reply) {
             if (reply->error() != QNetworkReply::NoError)
             {
-                addLog("检查更新失败。原因是：" + reply->errorString());
+                addLog("检查 UI 更新失败。原因是：" + reply->errorString());
                 ui->versionLabel->setText(
-                    "当前版本：" + QApplication::applicationVersion() + "\n检查更新失败\n"
+                    "当前版本：" + QApplication::applicationVersion() + "\n检查 UI 更新失败\n"
                 );
                 reply->deleteLater();
                 return;
@@ -194,11 +197,9 @@ MainWindow::MainWindow(QWidget *parent) :
             {
                 latestVersion = latestVersion.mid(1);
             }
-            addLog("检查更新成功。最新版本：" + latestVersion);
-            ui->versionLabel->setText(
-                "当前版本：" + nowVersion + "\n"
-                "最新版本：" + latestVersion + "\n"
-            );
+            addLog("检查 UI 更新成功。最新版本：" + latestVersion);
+			versionInfo.ui_latest = latestVersion;
+			updateVersionInfo();
 
             qsizetype nowVersionSuffix, latestVersionSuffix;
             auto nowVersionQ = QVersionNumber::fromString(nowVersion, &nowVersionSuffix);
@@ -208,8 +209,8 @@ MainWindow::MainWindow(QWidget *parent) :
                 (latestVersionQ == nowVersionQ && latestVersion.right(latestVersionSuffix) != nowVersion.right(nowVersionSuffix)))
             {
                 QMessageBox msgBox;
-                msgBox.setText("版本更新");
-                msgBox.setInformativeText("存在版本更新：" + latestVersion + "\n"
+                msgBox.setText("UI 版本更新");
+                msgBox.setInformativeText("存在 UI 版本更新：" + latestVersion + "\n"
                     "是否前往 Github 发布页面查看？");
                 msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
                 msgBox.setDefaultButton(QMessageBox::Ok);
@@ -222,18 +223,59 @@ MainWindow::MainWindow(QWidget *parent) :
             }
         });
 
+    // 检查核心更新
+    checkCoreUpdateNAM = new QNetworkAccessManager(this);
+
+    connect(checkCoreUpdateNAM, &QNetworkAccessManager::finished,
+        this, [&](QNetworkReply* reply) {
+            if (reply->error() != QNetworkReply::NoError)
+            {
+                addLog("检查核心更新失败。原因是：" + reply->errorString());
+                ui->versionLabel->setText(
+                    "当前版本：" + QApplication::applicationVersion() + "\n检查核心更新失败\n"
+                );
+                reply->deleteLater();
+                return;
+            }
+
+            QJsonObject json = QJsonDocument::fromJson(reply->readAll()).object();
+            reply->deleteLater();
+
+            QString nowVersion = versionInfo.core_version;
+            QString latestVersion = json["tag_name"].toString();
+
+            // 移除开头的 'v'
+            if (latestVersion.startsWith('v'))
+            {
+                latestVersion = latestVersion.mid(1);
+            }
+            addLog("检查核心更新成功。最新版本：" + latestVersion);
+            versionInfo.core_latest = latestVersion;
+            updateVersionInfo();
+
+            qsizetype nowVersionSuffix, latestVersionSuffix;
+            auto nowVersionQ = QVersionNumber::fromString(nowVersion, &nowVersionSuffix);
+            auto latestVersionQ = QVersionNumber::fromString(latestVersion, &latestVersionSuffix);
+
+            if (latestVersionQ > nowVersionQ ||
+                (latestVersionQ == nowVersionQ && latestVersion.right(latestVersionSuffix) != nowVersion.right(nowVersionSuffix)))
+            {
+                addLog("核心版本存在更新，可手动更新或通知开发者更新。");
+            }
+        });
+
+    initZjuConnect();
+
     if (settings->value("Common/CheckUpdateAfterStart", true).toBool())
     {
         checkUpdate();
     }
     else
     {
-        ui->versionLabel->setText(
-            "当前版本：" + QApplication::applicationVersion() + "\n自动检查更新已禁用\n"
-        );
+		versionInfo.ui_latest = "已禁用";
+		versionInfo.core_latest = "已禁用";
+		updateVersionInfo();
     }
-    
-    initZjuConnect();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -259,8 +301,20 @@ void MainWindow::clearLog()
 
 void MainWindow::checkUpdate()
 {
+    try
+    {
+        versionInfo.core_version = Utils::checkCoreVersion(this);
+		addLog("检查核心版本成功：" + versionInfo.core_version);
+    }
+    catch (const std::runtime_error& e)
+    {
+        addLog("检查核心版本失败：" + QString(e.what()));
+        versionInfo.core_version = "错误";
+    }
     QNetworkRequest request(QUrl("https://api.github.com/repos/" + Utils::REPO_NAME + "/releases/latest"));
     checkUpdateNAM->get(request);
+    QNetworkRequest request_c(QUrl("https://api.github.com/repos/" + Utils::CORE_REPO_NAME + "/releases/latest"));
+    checkCoreUpdateNAM->get(request_c);
 }
 
 void MainWindow::upgradeSettings()
@@ -289,6 +343,14 @@ void MainWindow::upgradeSettings()
 
     settings->setValue("Common/ConfigVersion", Utils::CONFIG_VERSION);
     settings->sync();
+}
+
+void MainWindow::updateVersionInfo()
+{
+	ui->versionLabel->setText(
+		"UI 版本：" + versionInfo.ui_version + " 最新：" + versionInfo.ui_latest + "\n"
+		"核心版本：" + versionInfo.core_version + " 最新：" + versionInfo.core_latest + "\n"
+	);
 }
 
 void MainWindow::showNotification(const QString &title, const QString &content, QSystemTrayIcon::MessageIcon icon)

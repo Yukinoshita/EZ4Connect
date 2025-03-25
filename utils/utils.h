@@ -3,12 +3,14 @@
 
 #include <QString>
 #include <QByteArray>
+#include <QNetworkReply>
 #include <QWidget>
 #include <QSettings>
 
 namespace Utils
 {
     const inline QString REPO_NAME("PageChen04/EZ4Connect");
+    const inline QString CORE_REPO_NAME("Mythologyli/zju-connect");
 
     const inline QString APP_NAME("EZ4Connect");
 
@@ -33,6 +35,10 @@ namespace Utils
     bool credentialCheck(const QString &username, const QString &password);
 
 	void resetDefaultSettings(QSettings &settings);
+
+    QString getCorePath();
+
+    QString checkCoreVersion(QObject *parent);
 }
 
 #endif //UTILS_H
