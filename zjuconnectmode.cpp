@@ -116,7 +116,7 @@ void MainWindow::initZjuConnect()
 
                     auto startZjuConnect = [this](const QString &username, const QString &password) {
                         QString program_path = Utils::getCorePath();
-						QString bind_prefix = settings->value("ZJUConnect/OutsideAccess", false).toBool() ? "[::]:" : "[::1]:";
+						QString bind_prefix = settings->value("ZJUConnect/OutsideAccess", false).toBool() ? "[::]:" : "127.0.0.1:";
 
                         isZjuConnectLinked = true;
                         ui->pushButton1->setText("断开服务器");
