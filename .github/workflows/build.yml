@@ -19,7 +19,7 @@ on:
         description: "Version to build (e.g. v0.0.0)"
 
 env:
-  QT_VERSION: '6.9.*'
+  QT_VERSION: '6.8.*'
   TARGET_NAME: 'EZ4Connect'
   DISPLAY_NAME: 'EZ4Connect'
 
@@ -85,6 +85,7 @@ jobs:
 
   build-windows-arm64:
     runs-on: windows-latest
+    if: false
     env:
       ARCHIVE_NAME: ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}-windows-arm64
     steps:
@@ -441,7 +442,7 @@ jobs:
     if: github.event_name == 'release'
     needs:
       - build-windows-x64
-      - build-windows-arm64
+      # - build-windows-arm64
       - build-macos-x64
       - build-macos-arm64
       - build-linux-x64
