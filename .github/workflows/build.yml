@@ -62,7 +62,6 @@ jobs:
       - name: Download and copy files
         env:
           VCINSTALLDIR: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC'
-        if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
         run: |
           mkdir "${{ env.DISPLAY_NAME }}"
           cd "${{ env.DISPLAY_NAME }}"
@@ -78,7 +77,6 @@ jobs:
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
-        if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
         with:
           name: ${{ env.ARCHIVE_NAME }}
           path: ${{ env.ARCHIVE_NAME }}.zip
@@ -135,7 +133,6 @@ jobs:
       - name: Download and copy files
         env:
           VCINSTALLDIR: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC'
-        if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
         run: |
           mkdir "${{ env.DISPLAY_NAME }}"
           cd "${{ env.DISPLAY_NAME }}"
@@ -151,7 +148,6 @@ jobs:
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
-        if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
         with:
           name: ${{ env.ARCHIVE_NAME }}
           path: ${{ env.ARCHIVE_NAME }}.zip
@@ -192,7 +188,6 @@ jobs:
           cmake --build build --target ${{ env.TARGET_NAME }} --parallel $(nproc)
 
       - name: Download and copy files
-        if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
         run: |
           cp -R build/${{ env.TARGET_NAME }}.app .
           curl -LO https://github.com/chenx-dust/zju-connect/releases/latest/download/zju-connect-darwin-amd64.zip
@@ -202,7 +197,6 @@ jobs:
           macdeployqt ${{ env.TARGET_NAME }}.app
 
       - name: Package dmg file
-        if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
         run: |
           brew install create-dmg
           mkdir dmg-build
@@ -217,7 +211,6 @@ jobs:
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
-        if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
         with:
           name: ${{ env.ARCHIVE_NAME }}
           path: ${{ env.ARCHIVE_NAME }}.dmg
@@ -258,7 +251,6 @@ jobs:
           cmake --build build --target ${{ env.TARGET_NAME }} --parallel $(nproc)
 
       - name: Download and copy files
-        if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
         run: |
           cp -R build/${{ env.TARGET_NAME }}.app .
           curl -LO https://github.com/chenx-dust/zju-connect/releases/latest/download/zju-connect-darwin-arm64.zip
@@ -268,7 +260,6 @@ jobs:
           macdeployqt ${{ env.TARGET_NAME }}.app
 
       - name: Package dmg file
-        if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
         run: |
           brew install create-dmg
           mkdir dmg-build
@@ -283,7 +274,6 @@ jobs:
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
-        if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
         with:
           name: ${{ env.ARCHIVE_NAME }}
           path: ${{ env.ARCHIVE_NAME }}.dmg
@@ -302,7 +292,7 @@ jobs:
           host: 'linux'
           target: 'desktop'
           arch: 'linux_gcc_64'
-          modules: 'qt5compat qtpositioning qtwebchannel qtwebengine'
+          modules: 'qt5compat qtpositioning qtserialport qtwebchannel qtwebengine'
           cache: 'true'
           cache-key-prefix: 'install-qt-action-linux_gcc_64'
 
@@ -324,7 +314,6 @@ jobs:
           cmake --build build --target ${{ env.TARGET_NAME }} --parallel $(nproc)
 
       - name: Download and copy files
-        if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
         run: |
           sudo apt install -y libxcb-cursor0 fuse
 
@@ -332,7 +321,6 @@ jobs:
           wget -O linuxdeploy-plugin-qt https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
           chmod a+x linuxdeploy linuxdeploy-plugin-qt
 
-          ls
           mkdir AppDir
           mkdir -p AppDir/usr/bin AppDir/usr/lib AppDir/usr/share/applications AppDir/usr/share/icons/hicolor/scalable/apps
 
@@ -356,7 +344,6 @@ jobs:
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
-        if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
         with:
           name: ${{ env.ARCHIVE_NAME }}
           path: ${{ env.ARCHIVE_NAME }}.AppImage
@@ -380,7 +367,7 @@ jobs:
           host: 'linux_arm64'
           target: 'desktop'
           arch: 'linux_gcc_arm64'
-          modules: 'qt5compat qtpositioning qtwebchannel qtwebengine'
+          modules: 'qt5compat qtpositioning qtserialport qtwebchannel qtwebengine'
           cache: 'true'
           cache-key-prefix: 'install-qt-action-linux_arm64'
 
@@ -402,7 +389,6 @@ jobs:
           cmake --build build --target ${{ env.TARGET_NAME }} --parallel $(nproc)
 
       - name: Download and copy files
-        if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
         run: |
           sudo apt install -y libxcb-cursor0 fuse
 
@@ -410,7 +396,6 @@ jobs:
           wget -O linuxdeploy-plugin-qt https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-aarch64.AppImage
           chmod a+x linuxdeploy linuxdeploy-plugin-qt
 
-          ls
           mkdir AppDir
           mkdir -p AppDir/usr/bin AppDir/usr/lib AppDir/usr/share/applications AppDir/usr/share/icons/hicolor/scalable/apps
 
@@ -434,7 +419,6 @@ jobs:
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
-        if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
         with:
           name: ${{ env.ARCHIVE_NAME }}
           path: ${{ env.ARCHIVE_NAME }}.AppImage
