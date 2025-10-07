@@ -74,6 +74,10 @@ ZjuConnectController::ZjuConnectController()
 
 void ZjuConnectController::start(
     const QString& program,
+    const QString& protocol,
+    const QString& authType,
+    const QString& loginDomain,
+    const QString& casTicket,
     const QString& username,
     const QString& password,
     const QString& totpSecret,
@@ -106,6 +110,30 @@ void ZjuConnectController::start(
 )
 {
     QStringList args;
+
+    if (!protocol.isEmpty())
+    {
+        args.append("-protocol");
+        args.append(protocol);
+    }
+
+    if (!authType.isEmpty())
+    {
+        args.append("-auth-type");
+        args.append("auth/" + authType);
+    }
+
+    if (!loginDomain.isEmpty())
+    {
+        args.append("-login-domain");
+        args.append(loginDomain);
+    }
+
+    if (!casTicket.isEmpty())
+    {
+        args.append("-cas-ticket");
+        args.append(casTicket);
+    }
 
     if (!server.isEmpty())
     {
@@ -255,10 +283,19 @@ void ZjuConnectController::start(
     QString timeString = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
     emit outputRead(timeString + " VPN 启动！参数：" + args.join(' '));
 
-    QStringList credentialList({
-            "-username", username,
-            "-password", password,
-        });
+    QStringList credentialList;
+
+    if (!username.isEmpty())
+    {
+        credentialList.append("-username");
+        credentialList.append(username);
+    }
+
+    if (!password.isEmpty())
+    {
+        credentialList.append("-password");
+        credentialList.append(password);
+    }
 
     if (!totpSecret.isEmpty())
     {

@@ -9,7 +9,7 @@
 #include <QSettings>
 
 #include "loginwindow/loginwindow.h"
-#include "extrasettingwindow/extrasettingwindow.h"
+#include "ssologinwebview/ssologinwebview.h"
 #include "zjuconnectcontroller/zjuconnectcontroller.h"
 #include "settingwindow/settingwindow.h"
 
@@ -71,16 +71,12 @@ private:
     QNetworkAccessManager *checkUpdateNAM;
     QNetworkAccessManager *checkCoreUpdateNAM;
     QSettings *settings;
-    QProcess *process;
-    QProcess *processForL2tp;
-    QProcess *processForL2tpCheck;
-    QProcess *processForWebLogin;
-    QTimer *l2tpCheckTimer;
 
     QObject *diagnosisContext;
 
     SettingWindow *settingWindow;
-    LoginWindow *login_window;
+    LoginWindow *loginWindow;
+    SsoLoginWebView *ssoLoginWebView;
 
     bool isFirstTimeSetMode;
 

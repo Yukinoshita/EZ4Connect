@@ -41,15 +41,17 @@ SettingWindow::SettingWindow(QWidget *parent, QSettings *inputSettings) :
                 extraSettingWindow->show();
             });
 
-    connect(ui->buttonBox->button(QDialogButtonBox::Ok), &QPushButton::clicked, [&](){
-        if (!Utils::credentialCheck(ui->usernameLineEdit->text(), ui->passwordLineEdit->text()))
+    connect(ui->buttonBox->button(QDialogButtonBox::Ok), &QPushButton::clicked, [&]() {
+        if (!(ui->atrustRadioButton->isChecked() && ui->casRadioButton->isChecked()) &&
+            !Utils::credentialCheck(ui->usernameLineEdit->text(), ui->passwordLineEdit->text()))
             return;
         applySettings();
         accept();
     });
 
-    connect(ui->buttonBox->button(QDialogButtonBox::Apply), &QPushButton::clicked, [&](){
-        if (!Utils::credentialCheck(ui->usernameLineEdit->text(), ui->passwordLineEdit->text()))
+    connect(ui->buttonBox->button(QDialogButtonBox::Apply), &QPushButton::clicked, [&]() {
+        if (!(ui->atrustRadioButton->isChecked() && ui->casRadioButton->isChecked()) &&
+            !Utils::credentialCheck(ui->usernameLineEdit->text(), ui->passwordLineEdit->text()))
             return;
         applySettings();
         loadSettings();
@@ -103,19 +105,6 @@ SettingWindow::SettingWindow(QWidget *parent, QSettings *inputSettings) :
                 QFile::copy(settings->fileName(), filename);
             });
 
-    connect(ui->tunCheckBox, &QCheckBox::toggled,
-        [&](bool checked)
-        {
-            ui->routeCheckBox->setEnabled(checked);
-            ui->dnsHijackCheckBox->setEnabled(checked);
-        });
-
-    connect(ui->dnsAutoCheckBox, &QCheckBox::toggled,
-        [&](bool checked)
-        {
-            ui->dnsLineEdit->setEnabled(!checked);
-        });
-
     connect(ui->passwordVisibleCheckBox, &QCheckBox::checkStateChanged,
         [&](Qt::CheckState state)
         {
@@ -166,6 +155,16 @@ void SettingWindow::loadSettings()
     ui->shadowsocksUrlLineEdit->setText(settings->value("ZJUConnect/ShadowsocksURL").toString());
     ui->dialDirectProxyLineEdit->setText(settings->value("ZJUConnect/DialDirectProxy").toString());
 
+    if (settings->value("ZJUConnect/Protocol").toString() == "atrust")
+        ui->atrustRadioButton->setChecked(true);
+    else
+        ui->easyconnectRadioButton->setChecked(true);
+    ui->loginDomainLineEdit->setText(settings->value("ZJUConnect/LoginDomain").toString());
+    if (settings->value("ZJUConnect/AuthType").toString() == "cas")
+        ui->casRadioButton->setChecked(true);
+    else
+        ui->pswRadioButton->setChecked(true);
+    ui->casLoginUrlLineEdit->setText(settings->value("ZJUConnect/CasLoginURL").toString());
 
     ui->multiLineCheckBox->setChecked(settings->value("ZJUConnect/MultiLine").toBool());
     ui->keepAliveCheckBox->setChecked(settings->value("ZJUConnect/KeepAlive").toBool());
@@ -224,6 +223,10 @@ void SettingWindow::applySettings()
     settings->setValue("ZJUConnect/ShadowsocksURL", ui->shadowsocksUrlLineEdit->text());
     settings->setValue("ZJUConnect/DialDirectProxy", ui->dialDirectProxyLineEdit->text());
 
+    settings->setValue("ZJUConnect/Protocol", ui->atrustRadioButton->isChecked() ? "atrust" : "easyconnect");
+    settings->setValue("ZJUConnect/LoginDomain", ui->loginDomainLineEdit->text());
+    settings->setValue("ZJUConnect/AuthType", ui->casRadioButton->isChecked() ? "cas" : "psw");
+    settings->setValue("ZJUConnect/CasLoginURL", ui->casLoginUrlLineEdit->text());
 
     settings->setValue("ZJUConnect/MultiLine", ui->multiLineCheckBox->isChecked());
     settings->setValue("ZJUConnect/KeepAlive", ui->keepAliveCheckBox->isChecked());

@@ -306,7 +306,7 @@ void Utils::resetDefaultSettings(QSettings& settings)
     settings.setValue("Common/SystemProxyBypass", "");
 
 
-    settings.setValue("ZJUConnect/ServerAddress", "vpn.hitsz.edu.cn");
+    settings.setValue("ZJUConnect/ServerAddress", "trust.hitsz.edu.cn");
     settings.setValue("ZJUConnect/ServerPort", 443);
     settings.setValue("ZJUConnect/DNS", "");
     settings.setValue("ZJUConnect/DNSAuto", true);
@@ -317,6 +317,9 @@ void Utils::resetDefaultSettings(QSettings& settings)
     settings.setValue("ZJUConnect/ShadowsocksURL", "");
     settings.setValue("ZJUConnect/DialDirectProxy", "");
 
+    settings.setValue("ZJUConnect/Protocol", "atrust");
+    settings.setValue("ZJUConnect/LoginDomain", "hitcas");
+    settings.setValue("ZJUConnect/AuthType", "cas");
 
     settings.setValue("ZJUConnect/MultiLine", false);
     settings.setValue("ZJUConnect/KeepAlive", false);

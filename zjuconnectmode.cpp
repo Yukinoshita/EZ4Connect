@@ -113,8 +113,10 @@ void MainWindow::initZjuConnect()
 
                     QString username_ = settings->value("Credential/Username", "").toString();
                     QString password_ = QByteArray::fromBase64(settings->value("Credential/Password", "").toString().toUtf8());
+                    QString protocol = settings->value("ZJUConnect/Protocol", "easyconnect").toString();
+                    QString authtype = settings->value("ZJUConnect/AuthType", "psw").toString();
 
-                    auto startZjuConnect = [this](const QString &username, const QString &password) {
+                    auto startZjuConnect = [this](const QString &username, const QString &password, const QString &casTicket) {
                         QString program_path = Utils::getCorePath();
 						QString bind_prefix = settings->value("ZJUConnect/OutsideAccess", false).toBool() ? "[::]:" : "127.0.0.1:";
 
@@ -128,14 +130,14 @@ void MainWindow::initZjuConnect()
                         }
 
                         zjuConnectController->start(
-                            program_path,
-                            username,
-                            password,
+                            program_path, settings->value("ZJUConnect/Protocol").toString(),
+                            settings->value("ZJUConnect/AuthType").toString(),
+                            settings->value("ZJUConnect/LoginDomain").toString(), casTicket, username, password,
                             settings->value("Credential/TOTPSecret").toString(),
                             settings->value("ZJUConnect/ServerAddress").toString(),
                             settings->value("ZJUConnect/ServerPort").toInt(),
                             settings->value("ZJUConnect/DNS").toString(),
-							settings->value("ZJUConnect/DNSAuto").toBool(),
+                            settings->value("ZJUConnect/DNSAuto").toBool(),
                             settings->value("ZJUConnect/SecondaryDNS").toString(),
                             settings->value("ZJUConnect/DNSTTL").toInt(),
                             bind_prefix + QString::number(settings->value("ZJUConnect/Socks5Port").toInt()),
@@ -156,17 +158,32 @@ void MainWindow::initZjuConnect()
                             settings->value("ZJUConnect/TcpPortForwarding").toString(),
                             settings->value("ZJUConnect/UdpPortForwarding").toString(),
                             settings->value("ZJUConnect/CustomDNS", "").toString(),
-	                        settings->value("ZJUConnect/CustomProxyDomain", "").toString(),
-	                        settings->value("ZJUConnect/ExtraArguments", "").toString()
-                        );
+                            settings->value("ZJUConnect/CustomProxyDomain", "").toString(),
+                            settings->value("ZJUConnect/ExtraArguments", "").toString());
                 	};
 
-                    if (username_.isEmpty() || password_.isEmpty())
+                    if (protocol == "atrust" && authtype == "cas")
                     {
-                        login_window = new LoginWindow(this);
-                        login_window->setDetail(username_, password_);
+                        ssoLoginWebView = new SsoLoginWebView(this);
+                        connect(ssoLoginWebView, &SsoLoginWebView::loginCompleted, [=](const QString &ticket) {
+                            startZjuConnect(username_, password_, ticket);
+                        });
 
-                        connect(login_window, &LoginWindow::login, this,
+                        const QString ssoUrl = settings->value("ZJUConnect/CasLoginURL", "about:blank").toString();
+
+                        addLog(QStringLiteral("单点登录：") + ssoUrl);
+                        ssoLoginWebView->setInitialUrl(QUrl::fromUserInput(ssoUrl));
+                        ssoLoginWebView->setCallbackServerHost(settings->value("ZJUConnect/ServerAddress", "trust.hitsz.edu.cn").toString());
+                        ssoLoginWebView->show();
+                        ssoLoginWebView->raise();
+                        ssoLoginWebView->activateWindow();
+                    }
+                    else if (username_.isEmpty() || password_.isEmpty())
+                    {
+                        loginWindow = new LoginWindow(this);
+                        loginWindow->setDetail(username_, password_);
+
+                        connect(loginWindow, &LoginWindow::login, this,
                             [&, startZjuConnect](const QString& username, const QString& password, bool saveDetail)
                             {
                                 if (saveDetail)
@@ -175,14 +192,14 @@ void MainWindow::initZjuConnect()
                                     settings->setValue("Credential/Password", QString(password.toUtf8().toBase64()));
                                     settings->sync();
                                 }
-                                startZjuConnect(username, password);
+                                startZjuConnect(username, password, "");
                             }
                         );
-                        login_window->show();
+                        loginWindow->show();
                     }
                     else
                     {
-                        startZjuConnect(username_, password_);
+                        startZjuConnect(username_, password_, "");
                     }
                 }
                 else

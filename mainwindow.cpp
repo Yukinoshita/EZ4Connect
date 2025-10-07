@@ -9,12 +9,9 @@
 
 #include "mainwindow.h"
 
-#include <set>
-
 #include "ui_mainwindow.h"
-#include "zjuconnectcontroller/zjuconnectcontroller.h"
 #include "utils/utils.h"
-
+#include "zjuconnectcontroller/zjuconnectcontroller.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -22,15 +19,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     zjuConnectController = nullptr;
 
-    process = new QProcess(this);
-    processForL2tp = new QProcess(this);
-    processForL2tpCheck = new QProcess(this);
-    processForWebLogin = new QProcess(this);
     settings = new QSettings(
         QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + "/config.ini",
         QSettings::IniFormat
     );
-    l2tpCheckTimer = nullptr;
     diagnosisContext = nullptr;
 
     upgradeSettings();
@@ -324,6 +316,10 @@ void MainWindow::upgradeSettings()
     if (configVersion == -1)
     {
         Utils::resetDefaultSettings(*settings);
+    }
+    else if (configVersion == 4)
+    {
+        settings->setValue("ZJUConnect/Protocol", "easyconnect");
     }
     else if (configVersion < Utils::CONFIG_VERSION)
     {

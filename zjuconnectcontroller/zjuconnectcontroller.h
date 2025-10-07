@@ -27,6 +27,10 @@ public:
 
     void start(
         const QString& program,
+        const QString& protocol,
+        const QString& authType,
+        const QString& loginDomain,
+        const QString& casTicket,
         const QString& username,
         const QString& password,
         const QString& totpSecret,

@@ -26,6 +26,7 @@ find_package(Qt6 COMPONENTS
     Network
     Svg
     Core5Compat
+    WebEngineWidgets
     REQUIRED
 )
 
@@ -37,6 +38,7 @@ set(SOURCE_FILES
     extrasettingwindow/extrasettingwindow.cpp
     settingwindow/settingwindow.cpp
     loginwindow/loginwindow.cpp
+    ssologinwebview/ssologinwebview.cpp
     utils/utils.cpp
     utils/proxysettings.cpp
     utils/coreversion.cpp
@@ -88,6 +90,7 @@ target_link_libraries(${PROJECT_NAME}
         Qt::Network
         Qt::Svg
         Qt::Core5Compat
+        Qt::WebEngineWidgets
         SingleApplication::SingleApplication
         ${PLATFORM_LIBS}
 )
