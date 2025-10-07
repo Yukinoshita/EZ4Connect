@@ -38,7 +38,7 @@ jobs:
           host: 'windows'
           target: 'desktop'
           arch: 'win64_msvc2022_64'
-          modules: 'qt5compat qtwebengine'
+          modules: 'qt5compat qtwebview'
           cache: 'true'
           cache-key-prefix: 'install-qt-action'
 
@@ -97,7 +97,7 @@ jobs:
           host: 'windows'
           target: 'desktop'
           arch: 'win64_msvc2022_arm64_cross_compiled'
-          modules: 'qt5compat qtwebengine'
+          modules: 'qt5compat qtwebview'
           cache: 'true'
           cache-key-prefix: 'install-qt-action'
 
@@ -108,7 +108,7 @@ jobs:
           host: 'windows'
           target: 'desktop'
           arch: 'win64_msvc2022_64'
-          modules: 'qt5compat qtwebengine'
+          modules: 'qt5compat qtwebview'
           cache: 'true'
           cache-key-prefix: 'install-qt-action'
           set-env: 'false'
@@ -118,7 +118,6 @@ jobs:
           NIGHTLY_BUILD: ${{ inputs.nightly || github.event_name != 'release' }}
           RELEASE_VERSION: ${{ inputs.version || github.event.release.tag_name }}
           QT_HOST_PATH: ${{ github.workspace }}\..\Qt\${{ env.QT_VERSION }}\msvc2022_64
-          EXTRA_CMAKE_ARGS: 
         run: |
           mkdir build
           if ( [bool]::Parse("${{ env.NIGHTLY_BUILD }}") ) {
@@ -170,7 +169,7 @@ jobs:
           host: 'mac'
           target: 'desktop'
           arch: 'clang_64'
-          modules: 'qt5compat qtwebengine'
+          modules: 'qt5compat qtwebview'
           cache: 'true'
           cache-key-prefix: 'install-qt-action'
 
@@ -236,7 +235,7 @@ jobs:
           host: 'mac'
           target: 'desktop'
           arch: 'clang_64'
-          modules: 'qt5compat qtwebengine'
+          modules: 'qt5compat qtwebview'
           cache: 'true'
           cache-key-prefix: 'install-qt-action'
 
@@ -302,7 +301,7 @@ jobs:
           host: 'linux'
           target: 'desktop'
           arch: 'linux_gcc_64'
-          modules: 'qt5compat qtwebengine'
+          modules: 'qt5compat qtwebview'
           cache: 'true'
           cache-key-prefix: 'install-qt-action'
 
@@ -374,7 +373,7 @@ jobs:
           host: 'linux_arm64'
           target: 'desktop'
           arch: 'linux_gcc_arm64'
-          modules: 'qt5compat qtwebengine'
+          modules: 'qt5compat qtwebview'
           cache: 'true'
           cache-key-prefix: 'install-qt-action'
 
