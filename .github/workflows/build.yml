@@ -332,6 +332,7 @@ jobs:
           wget -O linuxdeploy-plugin-qt https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
           chmod a+x linuxdeploy linuxdeploy-plugin-qt
 
+          ls
           mkdir AppDir
           mkdir -p AppDir/usr/bin AppDir/usr/lib AppDir/usr/share/applications AppDir/usr/share/icons/hicolor/scalable/apps
 
@@ -409,6 +410,7 @@ jobs:
           wget -O linuxdeploy-plugin-qt https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-aarch64.AppImage
           chmod a+x linuxdeploy linuxdeploy-plugin-qt
 
+          ls
           mkdir AppDir
           mkdir -p AppDir/usr/bin AppDir/usr/lib AppDir/usr/share/applications AppDir/usr/share/icons/hicolor/scalable/apps
 
