@@ -27,7 +27,9 @@ public:
 
     ~MainWindow() override;
 
-public slots:
+    void addLog(const QString &log);
+
+  public slots:
 
     void cleanUpWhenQuit();
 
@@ -44,8 +46,6 @@ private:
     void upgradeSettings();
 
     void clearLog();
-
-    void addLog(const QString &log);
 
     void showNotification(
         const QString &title,

@@ -116,6 +116,23 @@ SettingWindow::SettingWindow(QWidget *parent, QSettings *inputSettings) :
         {
             ui->totpSecretLineEdit->setEchoMode(state == Qt::Checked ? QLineEdit::Normal : QLineEdit::Password);
         });
+
+    connect(ui->authSelectPushButton, &QPushButton::clicked, this, [&]() {
+        authInfoWindow = new AuthInfoWindow(this);
+        connect(authInfoWindow, &AuthInfoWindow::finishAuthInfo, this,
+                [&](const QString &authType, const QString &loginDomain, const QString &loginUrl) {
+                    if (authType == "auth/cas")
+                    {
+                        ui->casRadioButton->setChecked(true);
+                        ui->casLoginUrlLineEdit->setText(loginUrl);
+                    }
+                    else
+                        ui->pswRadioButton->setChecked(true);
+                    ui->loginDomainLineEdit->setText(loginDomain);
+        });
+        authInfoWindow->fetchAuthInfo(ui->serverAddressLineEdit->text());
+        authInfoWindow->show();
+    });
 }
 
 SettingWindow::~SettingWindow()

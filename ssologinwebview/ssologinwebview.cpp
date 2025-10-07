@@ -57,9 +57,6 @@ void SsoLoginWebView::setupConnections()
                 else
                     request.accept();
             });
-    
-
-    connect(ui->dialogButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 }
 
 void SsoLoginWebView::setInitialUrl(const QUrl &url)

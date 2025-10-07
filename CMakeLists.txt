@@ -39,6 +39,7 @@ set(SOURCE_FILES
     settingwindow/settingwindow.cpp
     loginwindow/loginwindow.cpp
     ssologinwebview/ssologinwebview.cpp
+    authinfowindow/authinfowindow.cpp
     utils/utils.cpp
     utils/proxysettings.cpp
     utils/coreversion.cpp

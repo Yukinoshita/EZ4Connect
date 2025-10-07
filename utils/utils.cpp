@@ -320,6 +320,7 @@ void Utils::resetDefaultSettings(QSettings& settings)
     settings.setValue("ZJUConnect/Protocol", "atrust");
     settings.setValue("ZJUConnect/LoginDomain", "hitcas");
     settings.setValue("ZJUConnect/AuthType", "cas");
+    settings.setValue("ZJUConnect/CasLoginURL", "");
 
     settings.setValue("ZJUConnect/MultiLine", false);
     settings.setValue("ZJUConnect/KeepAlive", false);

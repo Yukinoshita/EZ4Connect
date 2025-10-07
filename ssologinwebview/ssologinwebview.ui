@@ -95,5 +95,22 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>dialogButtonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>SsoLoginWebView</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>479</x>
+     <y>619</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>479</x>
+     <y>319</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

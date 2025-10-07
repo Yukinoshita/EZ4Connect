@@ -169,14 +169,18 @@ void MainWindow::initZjuConnect()
                             startZjuConnect(username_, password_, ticket);
                         });
 
-                        const QString ssoUrl = settings->value("ZJUConnect/CasLoginURL", "about:blank").toString();
+                        QString serverHost = settings->value("ZJUConnect/ServerAddress", "trust.hitsz.edu.cn").toString();
+                        QString ssoUrl = settings->value("ZJUConnect/CasLoginURL").toString();
+                        if (ssoUrl.isEmpty())
+                            ssoUrl = "https://" + serverHost + "/passport/v1/public/casLogin?sfDomain=" +
+                                     settings->value("ZJUConnect/LoginDomain").toString();
+                        if (ssoUrl.startsWith("/"))
+                            ssoUrl = "https://" + serverHost + ssoUrl;
 
                         addLog(QStringLiteral("单点登录：") + ssoUrl);
                         ssoLoginWebView->setInitialUrl(QUrl::fromUserInput(ssoUrl));
-                        ssoLoginWebView->setCallbackServerHost(settings->value("ZJUConnect/ServerAddress", "trust.hitsz.edu.cn").toString());
+                        ssoLoginWebView->setCallbackServerHost(serverHost);
                         ssoLoginWebView->show();
-                        ssoLoginWebView->raise();
-                        ssoLoginWebView->activateWindow();
                     }
                     else if (username_.isEmpty() || password_.isEmpty())
                     {
