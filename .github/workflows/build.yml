@@ -90,17 +90,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install target Qt
-        uses: jurplel/install-qt-action@v3
-        with:
-          version: ${{ env.QT_VERSION }}
-          host: 'windows'
-          target: 'desktop'
-          arch: 'win64_msvc2022_arm64_cross_compiled'
-          modules: 'qt5compat qtpositioning qtwebchannel qtwebengine'
-          cache: 'true'
-          cache-key-prefix: 'install-qt-action'
-
       - name: Install host Qt
         uses: jurplel/install-qt-action@v3
         with:
@@ -112,6 +101,17 @@ jobs:
           cache: 'true'
           cache-key-prefix: 'install-qt-action'
           set-env: 'false'
+
+      - name: Install target Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: ${{ env.QT_VERSION }}
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2022_arm64_cross_compiled'
+          modules: 'qt5compat qtpositioning qtwebchannel qtwebengine'
+          cache: 'true'
+          cache-key-prefix: 'install-qt-action'
 
       - name: Configure
         env:
@@ -365,6 +365,11 @@ jobs:
       ARCHIVE_NAME: ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}-linux-arm64
     steps:
       - uses: actions/checkout@v4
+        
+      - name: Setup dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libevent-2.1-7t64 libminizip1t64
 
       - name: Install Qt
         uses: jdpurcell/install-qt-action@v4
