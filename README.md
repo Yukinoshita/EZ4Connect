@@ -9,6 +9,8 @@
 
 改进的 ZJU-Connect 图形界面
 
+## 🎉 现已提供 aTrust 的测试性支持
+
 欢迎加入 HITSZ 开源技术协会 [@hitszosa](https://github.com/hitszosa)
 
 ## 使用方式
