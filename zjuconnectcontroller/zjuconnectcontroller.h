@@ -1,6 +1,7 @@
 #ifndef ZJUCONNECTCONTROLLER_H
 #define ZJUCONNECTCONTROLLER_H
 
+#include "graphcaptchawindow/graphcaptchawindow.h"
 #include <QtCore>
 
 enum class ZJU_ERROR
@@ -12,6 +13,7 @@ enum class ZJU_ERROR
     ACCESS_DENIED,
     LISTEN_FAILED,
     CLIENT_FAILED,
+    CAPTCHA_FAILED,
     PROGRAM_NOT_FOUND,
     OTHER,
 };
@@ -21,7 +23,7 @@ class ZjuConnectController : public QObject
 Q_OBJECT
 
 public:
-    ZjuConnectController();
+    ZjuConnectController(QWidget* parent);
 
     ~ZjuConnectController() override;
 
@@ -71,11 +73,18 @@ signals:
 
     void outputRead(const QString &output);
 
+    void graphCaptcha(const QString &graphFile);
+
     void finished();
+
+    void write(const QByteArray &data);
 
 private:
     QProcess *zjuConnectProcess;
 
+    QTemporaryDir *tempDir = nullptr;
+
+    QString graphFile;
 };
 
 #endif //ZJUCONNECTCONTROLLER_H

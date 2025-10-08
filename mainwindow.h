@@ -29,13 +29,15 @@ public:
 
     void addLog(const QString &log);
 
-  public slots:
+public slots:
 
     void cleanUpWhenQuit();
 
 signals:
 
     void SetModeFinished();
+
+    void WriteToProcess(const QByteArray &data);
 
 protected:
     void closeEvent(QCloseEvent *e) override;
@@ -77,6 +79,7 @@ private:
     SettingWindow *settingWindow;
     LoginWindow *loginWindow;
     SsoLoginWebView *ssoLoginWebView;
+    GraphCaptchaWindow *graphCaptchaWindow;
 
     bool isFirstTimeSetMode;
 

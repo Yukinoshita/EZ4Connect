@@ -9,7 +9,7 @@ void MainWindow::initZjuConnect()
 {
     clearLog();
 
-    zjuConnectController = new ZjuConnectController();
+    zjuConnectController = new ZjuConnectController(this);
 
     disconnect(ui->pushButton1, &QPushButton::clicked, nullptr, nullptr);
     ui->pushButton1->setText("连接服务器");
@@ -31,6 +31,18 @@ void MainWindow::initZjuConnect()
             {
                 zjuConnectError = err;
             }
+        });
+
+    connect(zjuConnectController, &ZjuConnectController::graphCaptcha, this,
+        [&](const QString &graphFile) {
+            addLog("需要图形验证码");
+            graphCaptchaWindow = new GraphCaptchaWindow(this);
+            graphCaptchaWindow->setGraph(graphFile);
+            graphCaptchaWindow->show();
+            connect(graphCaptchaWindow, &GraphCaptchaWindow::finishCaptcha, this, [&](const QByteArray &captcha) {
+                addLog("图形验证码用户输入：" + captcha);
+                emit WriteToProcess(captcha + "\n");
+            });
         });
 
     connect(zjuConnectController, &ZjuConnectController::finished, this, [&]()
@@ -85,6 +97,9 @@ void MainWindow::initZjuConnect()
             break;
         case ZJU_ERROR::CLIENT_FAILED:
             QMessageBox::critical(this, "错误", "连接失败！\n可能是响应超时，请检查本地网络配置是否正常，服务器设置是否正确。");
+            break;
+        case ZJU_ERROR::CAPTCHA_FAILED:
+            QMessageBox::critical(this, "错误", "登录失败！\n验证码问题，可能是已验证码过期或者有误。");
             break;
         case ZJU_ERROR::PROGRAM_NOT_FOUND:
             QMessageBox::critical(this, "错误", "程序未找到！\n请检查核心是否在正确路径下，检查是否解压在当前目录下。");

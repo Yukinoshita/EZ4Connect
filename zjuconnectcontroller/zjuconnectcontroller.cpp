@@ -1,7 +1,8 @@
 #include "zjuconnectcontroller.h"
+#include "mainwindow.h"
 #include "utils/utils.h"
 
-ZjuConnectController::ZjuConnectController()
+ZjuConnectController::ZjuConnectController(QWidget* parent) : QObject(parent)
 {
     zjuConnectProcess = new QProcess(this);
 
@@ -9,7 +10,15 @@ ZjuConnectController::ZjuConnectController()
         {
             emit outputRead(output);
 
-            if (output.contains("Access is denied."))
+            if (output.contains("Graph check code saved to "))
+            {
+                emit graphCaptcha(graphFile);
+            }
+            else if (output.contains("graph check code still required after second login attempt"))
+            {
+                emit error(ZJU_ERROR::CAPTCHA_FAILED);
+            }
+            else if (output.contains("Access is denied."))
             {
                 emit error(ZJU_ERROR::ACCESS_DENIED);
             }
@@ -17,7 +26,7 @@ ZjuConnectController::ZjuConnectController()
             {
                 emit error(ZJU_ERROR::LISTEN_FAILED);
             }
-            else if (output.contains("Invalid username or password!"))
+            else if (output.contains("Invalid username or password!") || output.contains("ticket is empty"))
             {
                 emit error(ZJU_ERROR::INVALID_DETAIL);
             }
@@ -70,6 +79,10 @@ ZjuConnectController::ZjuConnectController()
     {
         emit finished();
     });
+
+
+    connect(qobject_cast<MainWindow *>(parent), &MainWindow::WriteToProcess, this,
+            [&](const QByteArray &data) { zjuConnectProcess->write(data); });
 }
 
 void ZjuConnectController::start(
@@ -121,6 +134,18 @@ void ZjuConnectController::start(
     {
         args.append("-auth-type");
         args.append("auth/" + authType);
+    }
+
+    if (authType == "psw")
+    {
+        if (tempDir == nullptr)
+        {
+            tempDir = new QTemporaryDir;
+            tempDir->setAutoRemove(true);
+        }
+        graphFile = tempDir->filePath("graph.jpg");
+        args.append("-graph-code-file");
+        args.append(graphFile);
     }
 
     if (!loginDomain.isEmpty())
