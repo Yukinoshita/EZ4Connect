@@ -1,7 +1,7 @@
 #include "authinfowindow.h"
 
-#include "../utils/utils.h"
-#include "../mainwindow.h"
+#include "utils/utils.h"
+#include "mainwindow.h"
 
 #include <QMessageBox>
 #include <QPushButton>

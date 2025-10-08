@@ -1,6 +1,6 @@
 #include "loginwindow.h"
 
-#include "../utils/utils.h"
+#include "utils/utils.h"
 
 #include <QMessageBox>
 #include <QPushButton>

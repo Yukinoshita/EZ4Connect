@@ -4,8 +4,8 @@
 #include <QDialog>
 #include <QSettings>
 #include "ui_settingwindow.h"
-#include "../extrasettingwindow/extrasettingwindow.h"
-#include "../authinfowindow/authinfowindow.h"
+#include "extrasettingwindow/extrasettingwindow.h"
+#include "authinfowindow/authinfowindow.h"
 
 namespace Ui
 {

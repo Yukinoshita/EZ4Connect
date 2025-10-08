@@ -40,11 +40,15 @@ set(SOURCE_FILES
     loginwindow/loginwindow.cpp
     ssologinwebview/ssologinwebview.cpp
     authinfowindow/authinfowindow.cpp
+    graphcaptchawindow/graphcaptchawindow.cpp
+    graphcaptchawindow/captchacanvas.cpp
     utils/utils.cpp
     utils/proxysettings.cpp
     utils/coreversion.cpp
     resource.qrc
 )
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 if (WIN32)
     message("Building for Windows")
