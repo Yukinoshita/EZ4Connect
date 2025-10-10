@@ -1,9 +1,11 @@
 #include <QMessageBox>
+#include <QInputDialog>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "loginwindow/loginwindow.h"
 #include "utils/utils.h"
+#include "zjuconnectcontroller/zjuconnectcontroller.h"
 
 void MainWindow::initZjuConnect()
 {
@@ -44,6 +46,13 @@ void MainWindow::initZjuConnect()
                 emit WriteToProcess(captcha + "\n");
             });
         });
+
+    connect(zjuConnectController, &ZjuConnectController::smsCode, this, [&]() {
+        addLog("需要短信验证码");
+        QString smsCode = QInputDialog::getText(this, "短信验证码", "请输入短信验证码：");
+        addLog("短信验证码用户输入：" + smsCode);
+        emit WriteToProcess(smsCode.toLocal8Bit() + "\n");
+    });
 
     connect(zjuConnectController, &ZjuConnectController::finished, this, [&]()
     {

@@ -14,6 +14,10 @@ ZjuConnectController::ZjuConnectController(QWidget* parent) : QObject(parent)
             {
                 emit graphCaptcha(graphFile);
             }
+            if (output.contains("Please enter the SMS verification code: "))
+            {
+                emit smsCode();
+            }
             else if (output.contains("graph check code still required after second login attempt"))
             {
                 emit error(ZJU_ERROR::CAPTCHA_FAILED);

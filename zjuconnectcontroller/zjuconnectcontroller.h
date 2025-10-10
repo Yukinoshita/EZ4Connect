@@ -74,6 +74,8 @@ signals:
 
     void graphCaptcha(const QString &graphFile);
 
+    void smsCode();
+
     void finished();
 
     void write(const QByteArray &data);
