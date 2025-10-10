@@ -10,7 +10,7 @@ ExtraSettingWindow::ExtraSettingWindow(QDialog *parent) :
     setWindowModality(Qt::WindowModal);
     setAttribute(Qt::WA_DeleteOnClose);
 
-    connect(ui->buttonBox, &QDialogButtonBox::accepted,
+    connect(this, &QDialog::accepted,
             [&]()
             {
                 QStringList tcpPortForwardingList;

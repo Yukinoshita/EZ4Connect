@@ -17,7 +17,7 @@ GraphCaptchaWindow::GraphCaptchaWindow(QWidget *parent) : QDialog(parent), ui(ne
     setWindowModality(Qt::WindowModal);
     setAttribute(Qt::WA_DeleteOnClose);
 
-    connect(ui->buttonBox, &QDialogButtonBox::accepted, [&]() {
+    connect(this, &QDialog::accepted, [&]() {
         QJsonObject obj;
         QJsonArray points;
         for (auto &point : ui->canvas->pointsPx())
@@ -34,7 +34,7 @@ GraphCaptchaWindow::GraphCaptchaWindow(QWidget *parent) : QDialog(parent), ui(ne
         emit finishCaptcha(docJson);
     });
 
-    connect(ui->buttonBox, &QDialogButtonBox::rejected, [&]() {
+    connect(this, &QDialog::rejected, [&]() {
         emit finishCaptcha(QByteArray("{}"));
     });
 

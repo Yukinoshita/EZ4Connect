@@ -12,6 +12,7 @@
 #include "ssologinwebview/ssologinwebview.h"
 #include "zjuconnectcontroller/zjuconnectcontroller.h"
 #include "settingwindow/settingwindow.h"
+#include "graphcaptchawindow/graphcaptchawindow.h"
 
 namespace Ui
 {

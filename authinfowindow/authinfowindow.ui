@@ -70,5 +70,21 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>authInfoListWidget</sender>
+   <signal>itemDoubleClicked(QListWidgetItem*)</signal>
+   <receiver>AuthInfoWindow</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>224</x>
+     <y>116</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>224</x>
+     <y>124</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
 </ui>

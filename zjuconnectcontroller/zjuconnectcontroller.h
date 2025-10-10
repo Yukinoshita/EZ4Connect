@@ -1,7 +1,6 @@
 #ifndef ZJUCONNECTCONTROLLER_H
 #define ZJUCONNECTCONTROLLER_H
 
-#include "graphcaptchawindow/graphcaptchawindow.h"
 #include <QtCore>
 
 enum class ZJU_ERROR

@@ -17,8 +17,10 @@ AuthInfoWindow::AuthInfoWindow(QWidget *parent)
     setWindowModality(Qt::WindowModal);
     setAttribute(Qt::WA_DeleteOnClose);
 
-    connect(ui->buttonBox, &QDialogButtonBox::accepted, [&]() {
+    connect(this, &QDialog::accepted, [&]() {
         QListWidgetItem *selectedItem = ui->authInfoListWidget->currentItem();
+        if (!selectedItem)
+            return;
         emit finishAuthInfo(selectedItem->data(Qt::UserRole).toString(),
                             selectedItem->data(Qt::UserRole + 1).toString(),
                             selectedItem->data(Qt::UserRole + 2).toString());
@@ -48,7 +50,7 @@ AuthInfoWindow::AuthInfoWindow(QWidget *parent)
                     QString loginDomain = obj.value("loginDomain").toString();
                     QString loginUrl = obj.value("loginUrl").toString();
                     QListWidgetItem *item =
-                        new QListWidgetItem(QString("%1 - %2 - %3 - %4").arg(authName, authType, loginDomain, loginUrl));
+                        new QListWidgetItem(QString("%1 - %2 - %3 - %4").arg(authName, authType, loginDomain, loginUrl.isEmpty()? "无" : loginUrl));
                     item->setData(Qt::UserRole, authType);
                     item->setData(Qt::UserRole + 1, loginDomain);
                     item->setData(Qt::UserRole + 2, loginUrl);
